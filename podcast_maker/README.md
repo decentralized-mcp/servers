@@ -1,5 +1,12 @@
 # Podcast maker
 
+**[Try the service here](https://openmcp.app/apps/podcasts/)**
+
+This MCP service provides two tools.
+
+* The `make_podcast` tool takes two arguments `title` and `article`, generates a podcast video from it, and returns the video ID. An agent can call this function directly as part of its workflow.
+* The `make_podcast_link` tool takes two arguments `title` and `article`, generates a podcast video from it, and returns a natural language description that includes the video download link. It is suitable for an LLM to call this function as part of its tool call process, and incorporate this answer into the final LLM response.
+
 ## Prerequisites
 
 ```
@@ -34,40 +41,36 @@ Run the `cmcp` tool like `curl` to request a list of tools supported in this SSE
 cmcp http://localhost:8081 tools/list
 ```
 
-It gives the list in JSON format.
+It gives the list of two tools `make_podcast` and `make_podcast_link` in JSON format.
 
 ```
 {
-  "meta": null,
-  "nextCursor": null,
   "tools": [
     {
       "name": "make_podcast",
-      "description": "Create a video podcast for the input title and article",
+      "description": "Create a video podcast for the input title and article. Returns a video ID. You will need to use the video ID to assemble a complete URL to download the video file.",
       "inputSchema": {
-        "properties": {
-          "title": {
-            "title": "Title",
-            "type": "string"
-          },
-          "article": {
-            "title": "Article",
-            "type": "string"
-          }
-        },
         "required": [
           "title",
           "article"
         ],
-        "title": "make_podcastArguments",
-        "type": "object"
+      }
+    },
+    {
+      "name": "make_podcast_link",
+      "description": "Create a video podcast for the input title and article. Returns a complete URL link to the video file.",
+      "inputSchema": {
+        "required": [
+          "title",
+          "article"
+        ],
       }
     }
   ]
 }
 ```
 
-Call the tool to generate a podcast episode from an article.
+Call the `make_podcast` tool to generate a podcast episode from an article.
 
 ```
 cmcp http://localhost:8081 tools/call -d '{"name": "make_podcast", "arguments": {"title": "Rare earths in America", "article": "The US has a single rare earths mine. Chinese export limits are energizing a push for more. America’s only rare earths mine heard from anxious companies soon after China responded to President Donald Trump’s tariffs this month by limiting exports of those minerals used for military applications and in many high-tech devices. “Based on the number of phone calls we’re receiving, the effects have been immediate,” said Matt Sloustcher, a spokesperson for MP Materials, the company that runs the Mountain Pass mine in California’s Mojave Desert. The trade war between the world’s two biggest economies could lead to a critical shortage of rare earth elements if China maintains its export controls long-term or expands them to seek an advantage in any trade negotiations. The California mine can’t meet all of the U.S. demand for rare earths, which is why Trump is trying to clear the way for new mines. Rare earth elements are important ingredients in electric vehicles, powerful magnets, advanced fighter jets, submarines, smartphones, television screens and many other products. Despite their name, the 17 elements aren’t actually rare, but it’s hard to find them in a high enough concentration to make a mine worth the investment."}}'
@@ -95,11 +98,25 @@ The agent can check the status of the task.
 curl http://159.138.158.109:8005/tasks/127
 ```
 
-Or, load the URL in their browser: `https://openmcp.app/apps/podcasts/?task_id=127`
-
-Upon completion, download the podcast video file.
+Or, you can call the `make_podcast_link` tool for the natural langauge response.
 
 ```
-curl -LO http://159.138.158.109:8005/download/task_127.mp4
+cmcp http://localhost:8081 tools/call -d '{"name": "make_podcast_link", "arguments": {"title": "Rare earths in America", "article": "... ..."}}'
+```
+
+The response is as follows.
+
+```
+{
+  "meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "Your podcast video will be available at: http://159.138.158.109:8005/download/task_133.mp4 \n\n Please wait for a few minutes for the system to generate the video. The link could could return HTTP 404 before the video is ready.",
+      "annotations": null
+    }
+  ],
+  "isError": false
+}
 ```
 
