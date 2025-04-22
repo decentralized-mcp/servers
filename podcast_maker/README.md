@@ -29,7 +29,7 @@ Edit the `.env` file to use your own Gaia node services.
 The server is started on port 8081 using the [mcp-proxy](https://github.com/sparfenyuk/mcp-proxy) tool.
 
 ```
-mcp-proxy --sse-port=8081 -- python3 tools.py
+mcp-proxy --sse-host=0.0.0.0 --sse-port=8081 -- python3 tools.py
 ```
 
 ## Test the SSE server

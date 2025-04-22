@@ -66,7 +66,7 @@ async def review(pr_url: str) -> str:
 
 @mcp.tool()
 async def content(pr_url: str) -> str:
-    """Get file and patch content for the input GitHub Pull Request (PR) URL."""
+    """Get file and patch content for the input GitHub Pull Request (PR) URL. Only use this tool when you need source materials for a new review or summary. Do not use it to double check or supplement an existing review."""
     FLOWS_ENDPOINT = os.getenv('FLOWS_ENDPOINT')
 
     result = parse_github_pr_url(pr_url)

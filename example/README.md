@@ -26,7 +26,7 @@ if __name__ == "__main__":
 The server is started on port 8081 using the [mcp-proxy](https://github.com/sparfenyuk/mcp-proxy) tool.
 
 ```
-mcp-proxy --sse-port=8081 -- python3 tools.py OPENWEATHERMAP_API_KEY
+mcp-proxy --sse-host=0.0.0.0 --sse-port=8081 -- python3 tools.py OPENWEATHERMAP_API_KEY
 ```
 
 Of course, you can start the MCP server in local `STDIO` mode as well.
