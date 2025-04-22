@@ -12,7 +12,7 @@ mcp = FastMCP("Podcast maker")
 
 @mcp.tool()
 async def make_podcast(title: str, article: str) -> str:
-    """Create a video podcast for the input title and article. Returns a video ID. You will need to use the video ID to assemble a complete URL to download the video file."""
+    """Create a video podcast for the input title and article. Returns URL links to check the status and download the file video file."""
     MAKER_ENDPOINT = os.getenv('MAKER_ENDPOINT')
     LLM_ENDPOINT = os.getenv('LLM_ENDPOINT')
     LLM_APIKEY = os.getenv('LLM_APIKEY')
@@ -47,17 +47,10 @@ async def make_podcast(title: str, article: str) -> str:
     }
 
     async with httpx.AsyncClient() as client:
-        response = await client.post(f"{MAKER_ENDPOINT}", json=json_request)
+        response = await client.post(f"{MAKER_ENDPOINT}/record_article", json=json_request)
         v = json.loads(response.text)
-        return v["task_id"]
-
-@mcp.tool()
-async def make_podcast_desc(title: str, article: str) -> str:
-    """Create a video podcast for the input title and article. Returns a complete URL link to the video file."""
-    MAKER_ENDPOINT = os.getenv('MAKER_ENDPOINT')
-    DOWNLOAD_ENDPOINT = MAKER_ENDPOINT.replace("record_article", "download")
-    video_id = await make_podcast(title, article)
-    return f"Your podcast video will be available at: {DOWNLOAD_ENDPOINT}/task_{video_id}.mp4 \n\n Please wait for a few minutes for the system to generate the video. The link could could return HTTP 404 before the video is ready."
+        task_id = v["task_id"]
+        return f"Your podcast video is in process.\n* Check its status at https://openmcp.app/apps/podcasts/?task_id={task_id}\n* Once it is done, download the MP4 video file at {MAKER_ENDPOINT}/download/task_{task_id}.mp4"
 
 if __name__ == "__main__":
     mcp.run(transport="stdio")
