@@ -5,11 +5,13 @@
 This MCP service provides two tools.
 
 * The `make_podcast` tool takes two arguments `title` and `article`, generates a podcast video from it, and returns the video ID. An agent can call this function directly as part of its workflow.
-* The `make_podcast_link` tool takes two arguments `title` and `article`, generates a podcast video from it, and returns a natural language description that includes the video download link. It is suitable for an LLM to call this function as part of its tool call process, and incorporate this answer into the final LLM response.
+* The `make_podcast_desc` tool takes two arguments `title` and `article`, generates a podcast video from it, and returns a natural language description that includes the video download link. It is suitable for an agent to call this function as part of the LLM tool call process, and incorporate this answer into the final LLM response.
 
 ## Prerequisites
 
 ```
+pip install langdetect
+
 pip install "mcp[cli]"
 pip install mcp-proxy
 pip install cmcp
@@ -41,7 +43,7 @@ Run the `cmcp` tool like `curl` to request a list of tools supported in this SSE
 cmcp http://localhost:8081 tools/list
 ```
 
-It gives the list of two tools `make_podcast` and `make_podcast_link` in JSON format.
+It gives the list of two tools `make_podcast` and `make_podcast_desc` in JSON format.
 
 ```
 {
@@ -57,7 +59,7 @@ It gives the list of two tools `make_podcast` and `make_podcast_link` in JSON fo
       }
     },
     {
-      "name": "make_podcast_link",
+      "name": "make_podcast_desc",
       "description": "Create a video podcast for the input title and article. Returns a complete URL link to the video file.",
       "inputSchema": {
         "required": [
@@ -92,16 +94,12 @@ The results is a task ID.
 }
 ```
 
-The agent can check the status of the task.
+The agent can check the status of the task like this `https://openmcp.app/apps/podcasts/?task_id=127`.
+
+Or, you can call the `make_podcast_desc` tool for the natural langauge response.
 
 ```
-curl http://159.138.158.109:8005/tasks/127
-```
-
-Or, you can call the `make_podcast_link` tool for the natural langauge response.
-
-```
-cmcp http://localhost:8081 tools/call -d '{"name": "make_podcast_link", "arguments": {"title": "Rare earths in America", "article": "... ..."}}'
+cmcp http://localhost:8081 tools/call -d '{"name": "make_podcast_desc", "arguments": {"title": "Rare earths in America", "article": "... ..."}}'
 ```
 
 The response is as follows.

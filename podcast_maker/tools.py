@@ -3,6 +3,7 @@ import sys
 import json
 import os
 from dotenv import load_dotenv
+from langdetect import detect
 from mcp.server.fastmcp import FastMCP
 
 load_dotenv()
@@ -19,28 +20,29 @@ async def make_podcast(title: str, article: str) -> str:
     SPEAKER_1 = os.getenv('SPEAKER_1')
     SPEAKER_2 = os.getenv('SPEAKER_2')
 
+    if detect(article).lower().startswith('zh'):
+        lang = "ZH"
+    else:
+        lang = "EN" 
+
     json_request = {
-        "only_audio": False,
-        "language": "EN",
-        "title": f"{title}",
-        "tts_engine": {
-            "type": "GSV",
-            "url": f"{TTS_ENDPOINT}"
-        },
         "callback_url": "",
-        "xtuis_token":"",
-        "speaker1": [
-            "Noah",
-            f"{SPEAKER_1}"
-        ],
-        "speaker2": [
-            "Emma",
-            f"{SPEAKER_2}"
-        ],
+        "xtuis_token": "",
         "llm_backend": {
             "url": f"{LLM_ENDPOINT}",
             "token": f"Bearer {LLM_APIKEY}"
         },
+        "only_audio": False,
+        "language": f"{lang}",
+        "tts_engine": {
+            "type": "GSV",
+            "url": f"{TTS_ENDPOINT}"
+        },
+        "scene_index": 0,
+        "speaker1": f"{SPEAKER_1}",
+        "speaker2": f"{SPEAKER_2}",
+        "podcast_prompt": "",
+        "title": f"{title}",
         "article": f"{article}"
     }
 
@@ -50,7 +52,7 @@ async def make_podcast(title: str, article: str) -> str:
         return v["task_id"]
 
 @mcp.tool()
-async def make_podcast_link(title: str, article: str) -> str:
+async def make_podcast_desc(title: str, article: str) -> str:
     """Create a video podcast for the input title and article. Returns a complete URL link to the video file."""
     MAKER_ENDPOINT = os.getenv('MAKER_ENDPOINT')
     DOWNLOAD_ENDPOINT = MAKER_ENDPOINT.replace("record_article", "download")
