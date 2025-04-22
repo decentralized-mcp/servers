@@ -61,7 +61,28 @@ async def review(pr_url: str) -> str:
     }
 
     async with httpx.AsyncClient(timeout=600.0) as client:
-        response = await client.post(f"{FLOWS_ENDPOINT}", json=json_request)
+        response = await client.post(f"{FLOWS_ENDPOINT}/review", json=json_request)
+        return response.text
+
+@mcp.tool()
+async def content(pr_url: str) -> str:
+    """Get file and patch content for the input GitHub Pull Request (PR) URL."""
+    FLOWS_ENDPOINT = os.getenv('FLOWS_ENDPOINT')
+
+    result = parse_github_pr_url(pr_url)
+    if result:
+        owner, repo, pr_number = result
+    else:
+        return "The pr_url is not valid"
+
+    json_request = {
+        "github_owner": f"{owner}",
+        "github_repo": f"{repo}",
+        "github_pr_number": int(pr_number)
+    }
+
+    async with httpx.AsyncClient(timeout=600.0) as client:
+        response = await client.post(f"{FLOWS_ENDPOINT}/content", json=json_request)
         return response.text
 
 if __name__ == "__main__":

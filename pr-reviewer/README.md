@@ -2,8 +2,10 @@
 
 **[Try the service here](https://openmcp.app/apps/pr-reviewer/)**
 
-This MCP service provides one tool `review`. It takes a single argument `pr_url`, the public URL for a 
-GitHub Pull Request, and returns the review in markdown text.
+This MCP service provides two tools.
+
+* The `review` tool takes a single argument `pr_url`, the public URL for a GitHub Pull Request, and returns the review in markdown text.
+* The `content` tool takes a single argument `pr_url`, and returns the cotent for all files and patches in this PR.
 
 ## Prerequisites
 
@@ -52,6 +54,15 @@ It gives the list of tools.
           "pr_url"
         ],
       }
+    },
+    {
+      "name": "content",
+      "description": "Get file and patch content for the input GitHub Pull Request (PR) URL.",
+      "inputSchema": {
+        "required": [
+          "pr_url"
+        ],
+      }
     }
   ]
 }
@@ -78,3 +89,27 @@ The results is the review in markdown format
   "isError": false
 }
 ```
+
+Call the `content` tool to get file and patch content from a GitHub Pull Request.
+
+```
+cmcp http://localhost:8081 tools/call -d '{"name": "content", "arguments": {"pr_url":"https://github.com/WasmEdge/WasmEdge/pull/4083"}}'
+```
+
+The results is the raw content.
+
+
+```
+{ 
+  "meta": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "The filename is Cargo.toml\n\n<code>...</code>\n\n<patch>...</patch>",
+      "annotations": null
+    }
+  ],
+  "isError": false
+}
+```
+
