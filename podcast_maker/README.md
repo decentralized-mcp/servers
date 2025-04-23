@@ -1,6 +1,10 @@
 # Podcast maker
 
+<div align="center">
+  
 **[Try the service here](https://openmcp.app/apps/podcasts/)**
+
+</div>
 
 This MCP service provides the `make_podcast` tool. It takes two arguments `title` and `article`, generates a podcast video from it, and returns a natural language description that includes a video status link and a video download link. An agent can call this function using LLM-generated text, and then incorporate its answer into the final LLM response.
 
