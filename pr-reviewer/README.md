@@ -113,7 +113,7 @@ The results is the raw content.
 }
 ```
 
-## Add the MCP server to Claud for Desktop
+## Add the MCP server to Claude for Desktop
 
 Since Claude for Desktop only supports STDIO natively, we'll need to install `mcp-remote` to enable SSE compatibility.
 
