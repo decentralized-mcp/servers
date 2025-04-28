@@ -1,6 +1,12 @@
 # GitHub PR reviewer
 
+<div align="center">
+  
+[Watch a demo video](https://x.com/mcp_servers/status/1914915281262272895)
+|
 **[Try the service here](https://openmcp.app/apps/pr-reviewer/)**
+
+</div>
 
 This MCP service provides two tools.
 
