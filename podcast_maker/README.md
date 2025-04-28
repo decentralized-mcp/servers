@@ -1,7 +1,9 @@
 # Podcast maker
 
 <div align="center">
-  
+
+[Watch a demo video](https://x.com/mcp_servers/status/1915426581524472097)
+|
 **[Try the service here](https://openmcp.app/apps/podcasts/)**
 
 </div>
