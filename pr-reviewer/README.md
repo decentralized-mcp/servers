@@ -9,9 +9,17 @@ This MCP service provides two tools.
 
 ## Prerequisites
 
+Install OpenMCP.
+
+```
+curl -sSfL 'https://raw.githubusercontent.com/decentralized-mcp/proxy/refs/heads/master/install.sh' | sudo bash
+```
+
+Install packages required by the MCP server itself.
+
+
 ```
 pip install "mcp[cli]"
-pip install mcp-proxy
 pip install cmcp
 ```
 
@@ -27,10 +35,10 @@ Edit the `.env` file to use your own Gaia node services.
 
 ## Start an SSE server
 
-The server is started on port 8081 using the [mcp-proxy](https://github.com/sparfenyuk/mcp-proxy) tool.
+The server is started on port 8081 using the OpenMCP proxy tool.
 
 ```
-mcp-proxy --sse-host=0.0.0.0 --sse-port=8081 -- python3 tools.py
+openmcp run -p 0.0.0.0:8081 -- python3 tools.py
 ```
 
 ## Test the SSE server
