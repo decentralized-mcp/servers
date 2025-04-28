@@ -127,3 +127,27 @@ The results is the raw content.
 }
 ```
 
+## Add the MCP server to Claude for Desktop
+
+Since Claude for Desktop only supports STDIO natively, we'll need to install `mcp-remote` to enable SSE compatibility.
+
+First, install the package on your machine:
+```
+npm i mcp-remote
+```
+
+Next, update your `claude_desktop_config.json` with the following configuration:
+
+```
+{
+  "mcpServers": {
+    "github-pr-review-openmcp": {
+      "command": "npx",
+      "args": ["mcp-remote", "http://localhost:8081/sse"]
+    }
+  }
+}
+```
+
+After that, restart Claude for Desktop. You should now be able to connect to and use the MCP server via SSE.
+
