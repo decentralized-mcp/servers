@@ -127,3 +127,22 @@ The results is the raw content.
 }
 ```
 
+## Add the MCP server to Claude for Desktop
+
+Claude Desktop requires STDIO-based MCP servers. Let's say that we have an OpenMCP server inside Docker, and would like to access it in Claude Desktop on the host using a mapped TCP/IP port, we could use `openmcp` on the client side (in Claude Desktop).
+
+Update your `claude_desktop_config.json` with the following configuration:
+
+```
+{
+  "mcpServers": {
+    "github-pr-review-openmcp": {
+      "command": "openmcp",
+      "args": ["run", "-p", "http://localhost:8081/sse"]
+    }
+  }
+}
+```
+
+After that, restart Claude for Desktop. You should now be able to connect to and use the MCP server via SSE.
+
