@@ -1,6 +1,8 @@
 import httpx
 import sys
 import json
+import os
+from dotenv import load_dotenv
 from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("Example tools")
@@ -14,7 +16,10 @@ def calculate_bmi(weight_kg: float, height_m: float) -> float:
 @mcp.tool()
 async def fetch_weather(city: str) -> str:
     """Fetch current weather for a city"""
-    api_key = sys.argv[1]
+    # api_key = sys.argv[1]
+    load_dotenv()
+    api_key = os.getenv("OPENWEATHERMAP_API_KEY")
+
     async with httpx.AsyncClient() as client:
         response = await client.get(f"https://api.openweathermap.org/data/2.5/weather?q={city}&APPID={api_key}")
         v = json.loads(response.text)

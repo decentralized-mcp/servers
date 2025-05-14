@@ -15,7 +15,12 @@ pip install "mcp[cli]"
 pip install cmcp
 ```
 
-Get an `OPENWEATHERMAP_API_KEY` [from here](https://openweathermap.org/api)
+Get an API key from [openweathermap](https://openweathermap.org/api)
+Put it into the `.env` file.
+
+```
+OPENWEATHERMAP_API_KEY=1234abcd
+```
 
 ## The MCP server
 
@@ -33,13 +38,13 @@ if __name__ == "__main__":
 The server is started on port 8081 using the OpenMCP proxy tool.
 
 ```
-openmcp run -p 0.0.0.0:8081 -- python3 tools.py OPENWEATHERMAP_API_KEY
+openmcp run -p 0.0.0.0:8081 -- python3 tools.py
 ```
 
 Of course, you can start the MCP server in local `STDIO` mode as well.
 
 ```
-python3 tools.py OPENWEATHERMAP_API_KEY
+python3 tools.py
 ```
 
 ## Test the SSE server
