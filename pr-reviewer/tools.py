@@ -36,7 +36,15 @@ def parse_github_pr_url(url):
 
 @mcp.tool()
 async def review(pr_url: str) -> str:
-    """Generate a review for the input GitHub Pull Request (PR) URL."""
+    """
+    Give a highly technical review for the GitHub Pull Request (PR). The review is intended for software developers. It could give the PR author feedback on how to improve the PR.
+
+    Args:
+        pr_url (str): GitHub pull request URL (e.g., 'https://github.com/WasmEdge/WasmEdge/pull/3835')
+    
+    Returns:
+        Text string of the PR review.
+    """
     FLOWS_ENDPOINT = os.getenv('FLOWS_ENDPOINT')
     LLM_ENDPOINT = os.getenv('LLM_ENDPOINT')
     LLM_APIKEY = os.getenv('LLM_APIKEY')
@@ -65,8 +73,54 @@ async def review(pr_url: str) -> str:
         return response.text
 
 @mcp.tool()
+async def explain(pr_url: str) -> str:
+    """
+    Give a non-technical summary and explanation for the GitHub Pull Request (PR). The review is intended for project managers who needs to under the PR at the high level.
+
+    Args:
+        pr_url (str): GitHub pull request URL (e.g., 'https://github.com/WasmEdge/WasmEdge/pull/3835')
+    
+    Returns:
+        Text string of the business explanation of the PR.
+    """
+    FLOWS_ENDPOINT = os.getenv('FLOWS_ENDPOINT')
+    LLM_ENDPOINT = os.getenv('LLM_ENDPOINT')
+    LLM_APIKEY = os.getenv('LLM_APIKEY')
+    LLM_CTX_SIZE = os.getenv('LLM_CTX_SIZE')
+
+    result = parse_github_pr_url(pr_url) 
+    if result:
+        owner, repo, pr_number = result
+    else:
+        return "The pr_url is not valid"
+
+    json_request = {
+        "github_owner": f"{owner}",
+        "github_repo": f"{repo}",
+        "github_pr_number": int(pr_number),
+        "llm_api_endpoint": f"{LLM_ENDPOINT}",
+        "llm_ctx_size": int(LLM_CTX_SIZE),
+        "llm_model_name": "default",
+        "llm_api_key": f"{LLM_APIKEY}",
+        "system_prompt": "",
+        "review_prompt": ""
+    }
+
+    async with httpx.AsyncClient(timeout=600.0) as client:
+        response = await client.post(f"{FLOWS_ENDPOINT}/explain", json=json_request)
+        return response.text
+
+@mcp.tool()
 async def content(pr_url: str) -> str:
-    """Get file and patch content for the input GitHub Pull Request (PR) URL. Only use this tool when you need source materials for a new review or summary. Do not use it to double check or supplement an existing review."""
+    """
+    Get file and patch content for the GitHub Pull Request (PR). Only use this tool when you need source materials analyzing or changing the PR content.
+
+    Args:
+        pr_url (str): GitHub pull request URL (e.g., 'https://github.com/WasmEdge/WasmEdge/pull/3835')
+    
+    Returns:
+        Text string containing meta data and all files in the PR.
+    """
     FLOWS_ENDPOINT = os.getenv('FLOWS_ENDPOINT')
 
     result = parse_github_pr_url(pr_url)

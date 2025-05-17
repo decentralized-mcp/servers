@@ -70,6 +70,15 @@ It gives the list of tools.
       }
     },
     {
+      "name": "explain",
+      "description": "Generate a non-technical explanation for the input GitHub Pull Request (PR) URL.",
+      "inputSchema": {
+        "required": [
+          "pr_url"
+        ],
+      }
+    },
+    {
       "name": "content",
       "description": "Get file and patch content for the input GitHub Pull Request (PR) URL.",
       "inputSchema": {
